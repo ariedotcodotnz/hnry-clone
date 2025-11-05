@@ -4,11 +4,16 @@
  * This should be only consumed at the "API" layer!
  */
 
+// API Base URL - points to backend server
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+
 type mimeTypes =
   | "application/json"
   | "multipart/form-data"
   | "application/x-www-form-urlencoded"
   | "text/plain";
+
+type HttpMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
 
 export interface ResponseBody {
   status?: string;
@@ -44,8 +49,13 @@ const constructRequest = (
   const contentTypeHeader = contentType ? { "Content-Type": contentType } : {};
   const acceptHeaders = accept ? { Accept: accept } : {};
 
+  // Prepend API_BASE_URL to relative paths
+  const fullUrl = typeof path === 'string' && path.startsWith('/')
+    ? `${API_BASE_URL}${path}`
+    : path;
+
   return {
-    input: path,
+    input: fullUrl,
     init: {
       method,
       headers: {
@@ -54,7 +64,7 @@ const constructRequest = (
         ...acceptHeaders,
       },
       body: body || undefined,
-      credentials: "same-origin",
+      credentials: "include", // Changed from "same-origin" to support CORS
     },
   };
 };

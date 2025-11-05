@@ -87,6 +87,10 @@ module.exports = {
       jQuery: 'jquery',
       'window.jQuery': 'jquery',
     }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+      'process.env.REACT_APP_API_URL': JSON.stringify(process.env.REACT_APP_API_URL || 'http://localhost:8000'),
+    }),
   ],
   devServer: {
     static: {
@@ -95,5 +99,7 @@ module.exports = {
     historyApiFallback: true,
     open: false,
     hot: true,
+    port: 8081,
+    host: 'localhost',
   },
 };
